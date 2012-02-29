@@ -3,6 +3,8 @@ from os import listdir
 import imp
 import inspect
 import pdb
+from geckoboard_types import types
+import json
 
 #there has to be a better way
 def load_widgets():
@@ -19,13 +21,18 @@ def load_widgets():
 
 	return usable_widgets
 
+def json_wrapper(user_defined_widget):
+	original_call = lambda: json.dumps(user_defined_widget(types))
+	return original_call
+
 def run():
 	widget_objects = load_widgets()
-	pdb.set_trace()
 	app = Flask(__name__)
 	
 	for widget in widget_objects.keys():
-		request = widget_objects[widget]
+		#dont want to force the user to json dump their widgets. not very clean.
+		#TODO: is there a way to decorate this in flask?
+		request = json_wrapper(widget_objects[widget])
 		request.methods = ['GET']
 		request.provide_automatic_options = False
 		app.add_url_rule("/"+widget,widget,request)
