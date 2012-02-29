@@ -6,6 +6,9 @@ import pdb
 from geckoboard_types import types
 import json
 
+#let the user save various snippets of data between runs
+cache = {}
+
 #there has to be a better way
 def load_widgets():
 	usable_widgets = {}
@@ -16,13 +19,13 @@ def load_widgets():
 			for name,obj in inspect.getmembers(widget):
 				if inspect.isfunction(obj):
 					usable_widgets[name] = obj
-		except:
+		except Exception as e:
 			pass
 
 	return usable_widgets
 
 def json_wrapper(user_defined_widget):
-	original_call = lambda: json.dumps(user_defined_widget(types))
+	original_call = lambda: json.dumps(user_defined_widget(types,cache))
 	return original_call
 
 def run():
@@ -38,7 +41,7 @@ def run():
 		app.add_url_rule("/"+widget,widget,request)
 
 	#change this if you dont like it.
-	app.run("0.0.0.0",5000)
+	app.run("127.0.0.1",5000)
 
 if __name__ == "__main__":
 	run()
