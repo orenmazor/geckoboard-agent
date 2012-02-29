@@ -37,7 +37,8 @@ def run():
 		request.provide_automatic_options = False
 		app.add_url_rule("/"+widget,widget,request)
 
-	app.run()
+	#change this if you dont like it.
+	app.run("0.0.0.0",5000)
 
 if __name__ == "__main__":
 	run()
